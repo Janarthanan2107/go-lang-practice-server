@@ -5,13 +5,13 @@ import (
 	"log"
 	"user/app"
 	"user/controllers"
+	"user/routes"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func main() {
-	// Connect to MongoDB
 	client, err := ConnectToMongoDB()
 	if err != nil {
 		log.Fatal("Error connecting to MongoDB:", err)
@@ -21,8 +21,12 @@ func main() {
 	// Initialize MongoDB collection
 	controllers.InitMongoDBCollection(client)
 
-	// Create a new application
+	// Create a new application with initialized MongoDB collection
 	application := app.NewApplication()
+
+	// Set up routes
+	router := routes.SetupUserRouter()
+	application.Router = router // Assign the router to the application
 
 	// Start the server
 	application.Start()
